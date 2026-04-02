@@ -64,6 +64,35 @@ You must start in an empty directory. Run the following command:
 Then run /leet-ai-start again in the new Claude Code session.
 ```
 
+### Step 1.5: Auto-update skill
+
+Check the skill repository for version updates and pull if a newer version is available:
+
+```bash
+SKILL_DIR="$HOME/.claude/skills/leet-ai-start"
+[ -L "$SKILL_DIR" ] && SKILL_DIR="$(cd "$SKILL_DIR" && pwd -P)"
+REPO_DIR="$(cd "$SKILL_DIR" && git rev-parse --show-toplevel 2>/dev/null)"
+
+if [ -n "$REPO_DIR" ] && [ -f "$REPO_DIR/version.json" ]; then
+  LOCAL_VER=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$REPO_DIR/version.json" | cut -d'"' -f4)
+  git -C "$REPO_DIR" fetch --quiet origin main 2>/dev/null
+  REMOTE_VER=$(git -C "$REPO_DIR" show origin/main:version.json 2>/dev/null | grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)
+
+  if [ -n "$LOCAL_VER" ] && [ -n "$REMOTE_VER" ] && [ "$LOCAL_VER" != "$REMOTE_VER" ]; then
+    echo "UPDATE: $LOCAL_VER → $REMOTE_VER"
+  else
+    echo "UP_TO_DATE"
+  fi
+else
+  echo "SKIP_UPDATE"
+fi
+```
+
+- If `UPDATE`: Run `git -C "$REPO_DIR" pull --ff-only origin main`
+  - Success: "✅ Skill updated ($LOCAL_VER → $REMOTE_VER)"
+  - Failure: "⚠️ Auto-update failed. Continuing with current version."
+- If `UP_TO_DATE` or `SKIP_UPDATE`: Continue silently (no message)
+
 ### Step 2: Consent
 
 AskUserQuestion: "Session conversation content will be sent to the grading server. File paths will be removed and only conversation content will be transmitted. Do you agree?"
