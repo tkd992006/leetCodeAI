@@ -1,107 +1,107 @@
 ---
 name: leet-ai-submit
-description: AI LeetCode 챌린지 제출 — 채점 과정 안내 후 실행
+description: Leet AI challenge submission — guide through grading process and execute
 ---
 
 # /leet-ai-submit
 
-챌린지를 제출하고 채점합니다.
+Submit and grade the challenge.
 
-### 0단계: 챌린지 확인
+### Step 0: Check challenge
 
-현재 디렉토리가 챌린지 프로젝트인지 확인합니다 (start가 현재 디렉토리에 파일을 풀어넣으므로):
+Verify that the current directory is a challenge project (since start unpacks files into the current directory):
 
 ```bash
 [ -f "./package.json" ] && [ -d "./tests" ] && echo "CHALLENGE_FOUND" || echo "NO_CHALLENGE"
 ```
 
-`NO_CHALLENGE`이면: "챌린지를 찾을 수 없습니다. `/leet-ai-start`로 시작하세요." 하고 중단.
+If `NO_CHALLENGE`: "Challenge not found. Start with `/leet-ai-start`." and abort.
 
-세션 설정을 읽습니다:
+Read session config:
 
 ```bash
 [ -f "./.aileet-session.json" ] && cat ./.aileet-session.json || echo "SESSION_CONFIG: NOT_FOUND"
 ```
 
-`.aileet-session.json`에서 읽는 값:
-- `challengeId`: 챌린지 ID (기본값: "easy-cart-v1")
-- `startTime`: 시작 시간 (unix timestamp) → 소요 시간 계산에 사용
-- `serverUrl`: 채점 서버 주소 (기본값: "https://aileetserver-production.up.railway.app")
+Values read from `.aileet-session.json`:
+- `challengeId`: Challenge ID (default: "easy-cart-v1")
+- `startTime`: Start time (unix timestamp) → used to calculate elapsed time
+- `serverUrl`: Grading server URL (default: "https://aileetserver-production.up.railway.app")
 
-파일이 없으면 기본값 사용.
+Use defaults if the file is missing.
 
-### 1단계: 제출 과정 안내
+### Step 1: Submission process overview
 
-다음 메시지를 표시합니다:
+Display the following message:
 
 ```
-📋 제출 과정 안내:
+📋 Submission Process:
 
-  [1/6] 테스트 실행 (자동)
-  [2/6] 코드 변경사항 수집 (자동)
-  [3/6] AI 대화 기록 수집 — 파일 경로 제거 후 요약
-  [4/6] 원본 Transcript 업로드 — 서버에 저장
-  [5/6] 채점 서버 전송 — LLM이 코드와 대화를 평가 (5-10초)
-  [6/6] 결과 표시
+  [1/6] Run tests (automatic)
+  [2/6] Collect code changes (automatic)
+  [3/6] Collect AI conversation log — summarize after removing file paths
+  [4/6] Upload original transcript — saved to server
+  [5/6] Send to grading server — LLM evaluates code and conversation (5-10 sec)
+  [6/6] Display results
 
-⚠️ 3-4단계에서 대화 내용이 채점 서버로 전송됩니다.
-   파일 경로는 제거되고 대화 내용만 전송됩니다.
+⚠️ In steps 3-4, conversation content will be sent to the grading server.
+   File paths will be removed and only conversation content will be transmitted.
 ```
 
-AskUserQuestion: "제출을 진행할까요?"
-A) 진행 → 계속
-B) 취소 → 중단
+AskUserQuestion: "Proceed with submission?"
+A) Proceed → Continue
+B) Cancel → Abort
 
-### 2단계: [1/6] 테스트 실행
+### Step 2: [1/6] Run tests
 
-"⏳ [1/6] 테스트 실행 중..."
+"⏳ [1/6] Running tests..."
 
 ```bash
 bun run test 2>&1
 ```
 
-출력에서 추출: 전체 테스트 수, 통과 수, 실패 수.
+Extract from output: total tests, passed, failed.
 
-"✅ [1/6] 테스트 완료: {passed}/{total} 통과"
+"✅ [1/6] Tests complete: {passed}/{total} passed"
 
-### 3단계: [2/6] 코드 변경사항
+### Step 3: [2/6] Code changes
 
-"⏳ [2/6] 코드 변경사항 수집 중..."
+"⏳ [2/6] Collecting code changes..."
 
 ```bash
 git diff HEAD
 ```
 
-"✅ [2/6] 코드 변경사항 수집 완료"
+"✅ [2/6] Code changes collected"
 
-### 4단계: [2.5/6] 수정된 테스트 파일
+### Step 4: [2.5/6] Modified test files
 
 ```bash
 git diff HEAD --name-only -- tests/
 ```
 
-### 5단계: [3/6] 대화 기록 수집
+### Step 5: [3/6] Collect conversation log
 
-"⏳ [3/6] 대화 기록 수집 중..."
+"⏳ [3/6] Collecting conversation log..."
 
-세션 파일을 찾습니다 (두 경로 모두 탐색):
+Find the session file (search both paths):
 
 ```bash
-# projects 경로 (최신 Claude Code)
+# projects path (latest Claude Code)
 SESSION_FILE=$(find ~/.claude/projects -name "*.jsonl" -not -path "*/subagents/*" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
-# 없으면 transcripts 경로 (이전 버전)
+# If not found, try transcripts path (older versions)
 [ -z "$SESSION_FILE" ] && SESSION_FILE=$(ls -t ~/.claude/transcripts/*.jsonl 2>/dev/null | head -1)
 echo "SESSION_FILE: ${SESSION_FILE:-NOT_FOUND}"
 ```
 
-세션 파일이 있으면 Read 도구로 읽습니다.
+If the session file exists, read it with the Read tool.
 
-JSONL에서 `tool_use` 타입 레코드를 분석하여:
-- 도구별 사용 횟수 집계
-- 첫 번째 도구 이름
-- `user` 타입 레코드 수 = 전체 턴 수
+Analyze `tool_use` type records from the JSONL:
+- Tally usage count per tool
+- First tool name
+- Number of `user` type records = total turns
 
-`toolUseSummary` 구성:
+Construct `toolUseSummary`:
 ```json
 {
   "toolCounts": { "read": 12, "edit": 6, "bash": 4 },
@@ -110,128 +110,128 @@ JSONL에서 `tool_use` 타입 레코드를 분석하여:
 }
 ```
 
-세션 파일이 없으면 빈 값 사용:
+If no session file, use empty values:
 ```json
 { "toolCounts": {}, "firstTool": "", "totalTurns": 0 }
 ```
 
-같은 세션 파일에서 `user`와 `assistant` 타입 메시지를 추출합니다.
+Extract `user` and `assistant` type messages from the same session file.
 
-전처리:
-1. 파일 경로를 `[PATH]`로 치환
-2. ~5000 토큰으로 요약
+Preprocessing:
+1. Replace file paths with `[PATH]`
+2. Summarize to ~5000 tokens
 
-세션 파일이 없으면 `conversationSummary`를 빈 문자열로.
+If no session file, set `conversationSummary` to an empty string.
 
-"✅ [3/6] 대화 요약 생성 완료 (tool_use 패턴 포함)"
+"✅ [3/6] Conversation summary generated (including tool_use patterns)"
 
-### 6단계: [4/6] Transcript 업로드
+### Step 6: [4/6] Upload transcript
 
-"⏳ [4/6] Transcript 원본 업로드 중..."
+"⏳ [4/6] Uploading original transcript..."
 
-세션 파일 원본을 서버에 업로드합니다 (admin 정밀 확인용):
+Upload the original session file to the server (for admin detailed review):
 
 ```bash
-# 세션 설정에서 서버 주소 읽기
+# Read server URL from session config
 AILEET_SERVER=$(cat .aileet-session.json 2>/dev/null | grep -o '"serverUrl"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)
 [ -z "$AILEET_SERVER" ] && AILEET_SERVER="https://aileetserver-production.up.railway.app"
 ```
 
-세션 파일 원본을 읽어서 서버에 POST합니다:
+Read the original session file and POST it to the server:
 
 ```bash
 TRANSCRIPT_FILE=$(mktemp)
-# 세션 파일 내용을 임시 파일에 저장
+# Save session file contents to temp file
 curl -s -X POST "$AILEET_SERVER/api/upload-transcript" \
   -H "Content-Type: application/json" \
   -d @"$TRANSCRIPT_FILE"
 rm -f "$TRANSCRIPT_FILE"
 ```
 
-응답에서 `transcriptUrl`을 받아서 다음 단계의 score 페이로드에 포함합니다.
+Receive `transcriptUrl` from the response and include it in the score payload in the next step.
 
-성공: "✅ [4/6] 업로드 완료"
-실패: "⚠️ [4/6] 업로드 실패 (채점은 계속 진행)"
+Success: "✅ [4/6] Upload complete"
+Failure: "⚠️ [4/6] Upload failed (grading will continue)"
 
-업로드 실패해도 채점은 계속 진행합니다 (transcriptUrl을 빈 문자열로).
+Grading continues even if upload fails (set transcriptUrl to empty string).
 
-### 7단계: [5/6] 채점 서버 전송
+### Step 7: [5/6] Send to grading server
 
-"⏳ [5/6] 채점 서버에 전송 중... (5-10초 소요)"
+"⏳ [5/6] Sending to grading server... (5-10 seconds)"
 
 ```bash
-# 세션 설정에서 서버 주소 읽기 (없으면 기본값)
+# Read server URL from session config (use default if missing)
 AILEET_SERVER=$(cat .aileet-session.json 2>/dev/null | grep -o '"serverUrl"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)
 [ -z "$AILEET_SERVER" ] && AILEET_SERVER="https://aileetserver-production.up.railway.app"
 
-# 서버 연결 확인
+# Check server connection
 curl -s --connect-timeout 3 "$AILEET_SERVER/health" > /dev/null 2>&1
 echo "SERVER: $?"
 ```
 
-서버 연결 실패 시:
-"채점 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인하세요: `bun run dev:server`"
-하고 중단.
+If server connection fails:
+"Cannot connect to grading server. Make sure the server is running: `bun run dev:server`"
+and abort.
 
-서버가 OK면 JSON 페이로드를 구성하여 전송:
+If server is OK, construct and send JSON payload:
 
 ```bash
 PAYLOAD_FILE=$(mktemp)
-# JSON 페이로드를 파일에 작성
+# Write JSON payload to file
 curl -s -X POST "$AILEET_SERVER/api/score" \
   -H "Content-Type: application/json" \
   -d @"$PAYLOAD_FILE"
 rm -f "$PAYLOAD_FILE"
 ```
 
-전송 데이터:
-- `challengeId`: challenge.json의 id 또는 "easy-cart-v1"
-- `sessionId`: 세션 ID
-- `durationSeconds`: 소요 시간
+Submitted data:
+- `challengeId`: id from challenge.json or "easy-cart-v1"
+- `sessionId`: Session ID
+- `durationSeconds`: Elapsed time
 - `testResults`: { passed, failed, total, details }
-- `modifiedTestFiles`: 수정된 테스트 파일 목록
+- `modifiedTestFiles`: List of modified test files
 - `toolUseSummary`: { toolCounts, firstTool, totalTurns }
-- `codeDiff`: git diff 결과
-- `conversationSummary`: 대화 요약
-- `transcriptUrl`: 6단계에서 받은 원본 URL (없으면 빈 문자열)
-- `timestamp`: 제출 시각
+- `codeDiff`: git diff output
+- `conversationSummary`: Conversation summary
+- `transcriptUrl`: Original URL from step 6 (empty string if unavailable)
+- `timestamp`: Submission time
 
-"✅ [5/6] 채점 완료!"
+"✅ [5/6] Grading complete!"
 
-### 8단계: [6/6] 결과 표시
+### Step 8: [6/6] Display results
 
 ```
-=== 채점 결과 ===
+=== Grading Results ===
 
-🏆 점수: {total}/100
-🎖️ 칭호: {title}
-📊 요약: {summary}
+🏆 Score: {total}/100
+🎖️ Title: {title}
+📊 Summary: {summary}
 
-💬 채점평: {feedback}
+💬 Feedback: {feedback}
 
-테스트: {passed}/{total} 통과
-소요 시간: {minutes}분 {seconds}초
+Tests: {passed}/{total} passed
+Time: {minutes}m {seconds}s
 ```
 
-### 9단계: 이메일 수집
+### Step 9: Collect email
 
 AskUserQuestion:
-"📧 정밀 채점 결과를 이메일로 받으시겠습니까?
-정밀 채점에서는 코드 리뷰, 프롬프트 분석, 개선 제안을 포함합니다."
-A) 이메일 입력 → 이메일 주소를 물어본 뒤 서버에 POST
-B) 건너뛰기 → 10단계로 이동
+"📧 Would you like to receive detailed grading results via email?
+Detailed grading includes code review, prompt analysis, and improvement suggestions."
+A) Enter email → Ask for email address then POST to server
+B) Skip → Go to step 10
 
-이메일을 받으면:
+If email is provided:
 
 ```bash
 AILEET_SERVER=$(cat .aileet-session.json 2>/dev/null | grep -o '"serverUrl"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)
 [ -z "$AILEET_SERVER" ] && AILEET_SERVER="https://aileetserver-production.up.railway.app"
 ```
 
-`$AILEET_SERVER/api/email`에 `submissionId`와 `email`을 POST합니다.
+POST `submissionId` and `email` to `$AILEET_SERVER/api/email`.
 
-### 10단계: 마무리
+### Step 10: Wrap up
 
-`scoreUrl`이 있으면 브라우저에서 열 것인지 제안합니다.
+If `scoreUrl` is available, suggest opening it in the browser.
 
-"수고하셨습니다! 🎉"
+"Great job! 🎉"

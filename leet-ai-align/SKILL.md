@@ -1,16 +1,16 @@
 ---
 name: leet-ai-align
-description: 다른 세션 대화 내용 연동 (미구현) AI LeetCode 
+description: Link conversation from another session (not yet implemented) Leet AI
 ---
 
 # /leet-ai-align
 
-다른 Claude Code 세션의 대화 내용을 채점에 포함시킵니다.
+Include conversation content from another Claude Code session in the grading.
 
-**현재 미구현**
+**Not yet implemented**
 
 ```
-/leet-ai-align은 아직 준비 중입니다.
-현재는 /leet-ai-start를 실행한 세션에서만 채점이 가능합니다.
-가능하면 하나의 세션에서 모든 작업을 진행해주세요.
+/leet-ai-align is not yet available.
+Currently, grading is only possible from the session where /leet-ai-start was run.
+If possible, please complete all work within a single session.
 ```

@@ -1,35 +1,35 @@
 ---
 name: leet-ai-reset
-description: AI LeetCode 챌린지 초기화 — 코드 변경사항 되돌리기
+description: Leet AI challenge reset — revert code changes
 ---
 
 # /leet-ai-reset
 
-챌린지를 초기 상태로 되돌립니다.
+Reset the challenge to its initial state.
 
-### 1단계: 챌린지 확인
+### Step 1: Check challenge
 
 ```bash
 [ -f "./package.json" ] && [ -d "./tests" ] && echo "CHALLENGE_FOUND" || echo "NO_CHALLENGE"
 ```
 
-`NO_CHALLENGE`이면: "챌린지 디렉토리가 아닙니다." 하고 중단.
+If `NO_CHALLENGE`: "This is not a challenge directory." and abort.
 
-### 2단계: 확인
+### Step 2: Confirm
 
-AskUserQuestion: "모든 코드 변경사항을 되돌리고 초기 상태로 리셋합니다. 진행할까요?"
-A) 리셋
-B) 취소
+AskUserQuestion: "This will revert all code changes and reset to the initial state. Proceed?"
+A) Reset
+B) Cancel
 
-B이면 중단.
+If B, abort.
 
-### 3단계: 리셋
+### Step 3: Reset
 
 ```bash
 git checkout -- . && git clean -fd
 ```
 
 ```
-리셋 완료! 초기 상태로 돌아갔습니다.
-`bun run test`로 확인하세요.
+Reset complete! Returned to initial state.
+Run `bun run test` to verify.
 ```
