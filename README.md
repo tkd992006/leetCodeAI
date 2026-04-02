@@ -9,10 +9,8 @@ Solve coding problems with Claude Code, get scored on 4 criteria, and earn badge
 ## Installation
 
 ```bash
-git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI
+git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI && ~/.claude/skills/leetCodeAI/setup
 ```
-
-> Clone into the Claude Code skills directory (`~/.claude/skills/`) and it's ready to use.
 
 ## Usage
 

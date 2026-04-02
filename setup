@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# leetCodeAI setup — register skills with Claude Code
+set -e
+
+INSTALL_DIR="$(cd "$(dirname "$0")" && pwd)"
+SKILLS_DIR="$(dirname "$INSTALL_DIR")"
+REPO_NAME="$(basename "$INSTALL_DIR")"
+
+linked=()
+for skill_dir in "$INSTALL_DIR"/leet-ai-*/; do
+  [ -f "$skill_dir/SKILL.md" ] || continue
+  skill_name="$(basename "$skill_dir")"
+  target="$SKILLS_DIR/$skill_name"
+  if [ -L "$target" ] || [ ! -e "$target" ]; then
+    ln -snf "$REPO_NAME/$skill_name" "$target"
+    linked+=("$skill_name")
+  fi
+done
+
+if [ ${#linked[@]} -gt 0 ]; then
+  echo "✅ Linked skills: ${linked[*]}"
+else
+  echo "Skills already linked."
+fi
+
+echo ""
+echo "Ready! Start a challenge:"
+echo "  mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude"
+echo "  /leet-ai-start"

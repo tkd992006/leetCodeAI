@@ -9,10 +9,8 @@ Claude Code로 코딩 문제를 풀고, 4가지 기준으로 채점받으세요.
 ## 설치
 
 ```bash
-git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI
+git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI && ~/.claude/skills/leetCodeAI/setup
 ```
-
-> Claude Code의 스킬 디렉토리(`~/.claude/skills/`)에 클론하면 바로 사용 가능합니다.
 
 ## 사용법
 
