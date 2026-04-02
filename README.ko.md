@@ -1,6 +1,6 @@
 🇺🇸 [English](README.md)
 
-# Leet AI — AI-Powered Coding Challenge
+# Leet Code AI — AI-Powered Coding Challenge
 
 AI 코딩 어시스턴트를 얼마나 잘 다루는지 측정하는 실전 챌린지입니다.
 Claude Code로 코딩 문제를 풀고, 4가지 기준으로 채점받으세요. 뱃지도 받을 수 있습니다.
@@ -13,44 +13,59 @@ git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeA
 
 ## 시험 보기
 
+**1. 터미널**에서 아래 중 하나를 실행하세요:
+
+자동 허가 모드 — 권한 확인 생략 (빠르게 진행하고 싶은 경우)
+```bash
+mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude --dangerously-skip-permissions
+```
+
+일반 모드 — Claude가 매 작업마다 권한을 물어봄
 ```bash
 mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
 ```
 
-Claude Code 안에서 `/leet-ai-start` 를 입력하세요.
+**2. 챌린지 시작** — Claude Code 안에서 입력:
+
+```
+/leet-ai-start
+```
+
+**3. 풀기, 테스트, 제출:**
+
+| 어디서 | 뭘 할 때 | 명령어 |
+|--------|----------|--------|
+| Claude Code | AI와 대화, 버그 수정, 코드 작성 | 그냥 대화 |
+| 터미널 | 앱 미리보기 | `bun run dev` |
+| 터미널 | 테스트 실행 | `bun run test` |
+| Claude Code | 채점 제출 | `/leet-ai-submit` |
 
 ## 이렇게 동작합니다
 
 ```
-You:    mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+── 터미널 ──
 
-        ── Claude Code 안에서 ──
+$ mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+
+── Claude Code 안에서 ──
 
 You:    /leet-ai-start
-Claude: 환경 확인 중...
-        ✅ bun 1.2 감지됨
+Claude: ✅ bun 1.2 감지됨
         ✅ git 감지됨
         ✅ 빈 디렉토리 확인
         📦 챌린지 파일 준비 중...
         ✅ 템플릿 복사 완료, 의존성 설치 완료
 
-        === Leet AI Challenge Start ===
         📋 Shopping Cart Bug Fix [Medium] | ⏱️ 30분
-        모든 테스트를 통과시키세요. 완료되면 leet-ai-submit
+        모든 테스트를 통과시키세요. 완료되면 /leet-ai-submit
 
 You:    [AI와 대화하며 버그 수정, 코드 작성, 테스트 실행]
-
-You:    bun run test
-Claude: ✅ 12/12 tests passed
 
 You:    /leet-ai-submit
 Claude: 📊 채점 서버에 제출 중...
         ✅ 점수: 87/100
         🏅 뱃지: PROMPT SURGEON
 ```
-
-> **참고:** `leet-ai-start`, `leet-ai-submit`, `leet-ai-reset`은 Claude Code 스킬입니다.
-> Claude Code 세션 안에서 메시지로 입력하세요 — 터미널 명령어가 아닙니다.
 
 ## 채점 방식
 

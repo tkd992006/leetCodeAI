@@ -1,6 +1,6 @@
 ---
 name: leet-ai-align
-description: Link conversation from another session (not yet implemented) Leet AI
+description: Link conversation from another session (not yet implemented) Leet Code AI
 ---
 
 # /leet-ai-align

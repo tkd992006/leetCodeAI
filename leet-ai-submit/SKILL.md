@@ -1,6 +1,6 @@
 ---
 name: leet-ai-submit
-description: Leet AI challenge submission — guide through grading process and execute
+description: Leet Code AI challenge submission — guide through grading process and execute
 ---
 
 # /leet-ai-submit
@@ -27,6 +27,7 @@ Values read from `.aileet-session.json`:
 - `challengeId`: Challenge ID (default: "easy-cart-v1")
 - `startTime`: Start time (unix timestamp) → used to calculate elapsed time
 - `serverUrl`: Grading server URL (default: "https://aileetserver-production.up.railway.app")
+- `locale`: User language preference (default: "ko")
 
 Use defaults if the file is missing.
 
@@ -210,6 +211,7 @@ Submitted data:
 - `codeDiff`: git diff output
 - `conversationSummary`: Conversation summary
 - `transcriptUrl`: Original URL from step 6 (empty string if unavailable)
+- `locale`: User language preference from session config (default: "ko")
 - `timestamp`: Submission time
 
 "✅ [5/6] Grading complete!"
@@ -231,13 +233,29 @@ Time: {minutes}m {seconds}s
 
 ### Step 9: Collect email
 
-AskUserQuestion:
-"📧 Would you like to receive detailed grading results via email?
-Detailed grading includes code review, prompt analysis, and improvement suggestions."
-A) Enter email → Ask for email address then POST to server
-B) Skip → Go to step 10
+First, detect the user's email from git config:
 
-If email is provided:
+```bash
+git config user.email
+```
+
+**If git email is found (e.g., `user@gmail.com`):**
+
+AskUserQuestion:
+"📧 채점 결과를 이메일로 보내드릴까요?"
+A) {detected git email} 으로 전송 → POST this email to server immediately
+B) 다른 이메일 입력 → Ask for email address, then POST
+C) 건너뛰기 → Go to step 10
+
+**If no git email found:**
+
+AskUserQuestion:
+"📧 채점 결과를 이메일로 받으시겠습니까?
+이메일을 입력하시면 코드 리뷰, 프롬프트 분석, 개선 제안이 포함된 상세 리포트를 보내드립니다."
+A) 이메일 입력 → Ask for email address, then POST
+B) 건너뛰기 → Go to step 10
+
+If email is provided (either from git or manual input):
 
 ```bash
 AILEET_SERVER=$(cat .aileet-session.json 2>/dev/null | grep -o '"serverUrl"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)

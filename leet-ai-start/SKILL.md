@@ -1,6 +1,6 @@
 ---
 name: leet-ai-start
-description: Leet AI challenge start — check environment, unpack template, begin coding
+description: Leet Code AI challenge start — check environment, unpack template, begin coding
 ---
 
 # /leet-ai-start
@@ -17,7 +17,7 @@ mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
 Display the following message: "🔍 Checking your environment..."
 
 ```bash
-echo "=== Leet AI Environment Check ==="
+echo "=== Leet Code AI Environment Check ==="
 
 if command -v bun &>/dev/null; then
   echo "BUN: $(bun --version)"
@@ -69,6 +69,14 @@ Then run /leet-ai-start again in the new Claude Code session.
 AskUserQuestion: "Session conversation content will be sent to the grading server. File paths will be removed and only conversation content will be transmitted. Do you agree?"
 A) Agree → Continue
 B) Decline → Abort
+
+### Step 2.5: Select language
+
+AskUserQuestion: "Choose your preferred language for grading results:"
+A) 한국어 → Set locale to "ko"
+B) English → Set locale to "en"
+
+Save the selected locale for Step 7 (session config).
 
 ### Step 3: Prepare challenge
 
@@ -139,7 +147,8 @@ cat > .aileet-session.json << SESS_EOF
 {
   "challengeId": "easy-cart-v1",
   "startTime": $(date +%s),
-  "serverUrl": "${AILEET_SERVER_URL:-https://aileetserver-production.up.railway.app}"
+  "serverUrl": "${AILEET_SERVER_URL:-https://aileetserver-production.up.railway.app}",
+  "locale": "${AILEET_LOCALE:-ko}"
 }
 SESS_EOF
 
@@ -150,7 +159,7 @@ touch /tmp/.aileet-start-marker
 Display instructions:
 
 ```
-=== Leet AI Challenge Start ===
+=== Leet Code AI Challenge Start ===
 
 📋 Shopping Cart Bug Fix [Medium] | ⏱️ 30 minutes
 

@@ -1,6 +1,6 @@
 ---
 name: leet-ai-reset
-description: Leet AI challenge reset — revert code changes
+description: Leet Code AI challenge reset — revert code changes
 ---
 
 # /leet-ai-reset

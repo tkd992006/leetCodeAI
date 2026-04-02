@@ -1,6 +1,6 @@
 🇰🇷 [한국어](README.ko.md)
 
-# Leet AI — AI-Powered Coding Challenge
+# Leet Code AI — AI-Powered Coding Challenge
 
 A hands-on challenge that measures how effectively you can work with an AI coding assistant.
 Solve coding problems with Claude Code, get scored on 4 criteria, and earn badges.
@@ -13,44 +13,58 @@ git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeA
 
 ## Taking the Challenge
 
+**1. Open a terminal** and run one of the following:
+
+# Standard — Claude asks permission for each action
 ```bash
 mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+# Auto-approve — skip all permission prompts (faster, for experienced users)
+```
+```bash
+mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude --dangerously-skip-permissions
 ```
 
-Then inside Claude Code, type `/leet-ai-start`.
+**2. Start the challenge** — type this inside Claude Code:
+
+```
+/leet-ai-start
+```
+
+**3. Solve, test, submit:**
+
+| Where | What | Command |
+|-------|------|---------|
+| Claude Code | Talk to AI, fix bugs, write code | just chat |
+| Terminal | Preview the app | `bun run dev` |
+| Terminal | Run tests | `bun run test` |
+| Claude Code | Submit for grading | `/leet-ai-submit` |
 
 ## See it work
 
 ```
-You:    mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+── terminal ──
 
-        ── inside Claude Code ──
+$ mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+
+── inside Claude Code ──
 
 You:    /leet-ai-start
-Claude: Checking your environment...
-        ✅ bun 1.2 detected
+Claude: ✅ bun 1.2 detected
         ✅ git detected
         ✅ Empty directory confirmed
         📦 Preparing challenge files...
         ✅ Template copied, dependencies installed
 
-        === Leet AI Challenge Start ===
         📋 Shopping Cart Bug Fix [Medium] | ⏱️ 30 minutes
-        Pass all the tests. When done, run leet-ai-submit
+        Pass all the tests. When done, type /leet-ai-submit
 
 You:    [work with AI to fix bugs, write code, run tests]
-
-You:    bun run test
-Claude: ✅ 12/12 tests passed
 
 You:    /leet-ai-submit
 Claude: 📊 Submitting for grading...
         ✅ Score: 87/100
         🏅 Badge: PROMPT SURGEON
 ```
-
-> **Note:** `leet-ai-start`, `leet-ai-submit`, `leet-ai-reset` are Claude Code skills.
-> Type them as messages inside a Claude Code session — not as terminal commands.
 
 ## Scoring
 
