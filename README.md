@@ -3,67 +3,61 @@
 # Leet AI — AI-Powered Coding Challenge
 
 A hands-on challenge that measures how effectively you can work with an AI coding assistant.
-
 Solve coding problems with Claude Code, get scored on 4 criteria, and earn badges.
 
-## Installation
+## Installation (30 seconds)
 
 ```bash
 git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI && ~/.claude/skills/leetCodeAI/setup
 ```
 
-## Usage
-
-### 1. Start in an empty directory
-
-```bash
-mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
-```
-
-### 2. Begin the challenge
-
-In Claude Code:
-```
-/leet-ai-start
-```
-
-This automatically checks your environment, installs the challenge template, and opens the editor.
-
-### 3. Solve the problem
-
-Write code by collaborating with AI. The goal is to **pass all tests**.
-
-```bash
-bun run dev   # Preview the app in your browser
-bun run test  # Run tests
-```
-
-### 4. Submit
+## See it work
 
 ```
-/leet-ai-submit
+You:    mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+
+        ── inside Claude Code ──
+
+You:    /leet-ai-start
+Claude: Checking your environment...
+        ✅ bun 1.2 detected
+        ✅ git detected
+        ✅ Empty directory confirmed
+        📦 Preparing challenge files...
+        ✅ Template copied, dependencies installed
+
+        === Leet AI Challenge Start ===
+        📋 Shopping Cart Bug Fix [Medium] | ⏱️ 30 minutes
+        Pass all the tests. When done, run leet-ai-submit
+
+You:    [work with AI to fix bugs, write code, run tests]
+
+You:    bun run test
+Claude: ✅ 12/12 tests passed
+
+You:    /leet-ai-submit
+Claude: 📊 Submitting for grading...
+        ✅ Score: 87/100
+        🏅 Badge: PROMPT SURGEON
 ```
 
-### 5. View results
-
-After grading, you can check your score, badges, and AI review on the web.
-
----
+> **Note:** `leet-ai-start`, `leet-ai-submit`, `leet-ai-reset` are Claude Code skills.
+> Type them as messages inside a Claude Code session — not as terminal commands.
 
 ## Scoring
 
-Your submission is evaluated on 4 criteria (25 points each, 100 total):
+4 criteria, 25 points each, 100 total:
 
-| Criteria | Description | Evaluation Method |
-|----------|-------------|-------------------|
-| **Completeness** | Test pass rate | Automated (passed/total x 25) |
-| **Output Quality** | Code quality, structure, naming | AI review (code diff analysis) |
-| **Process Quality** | Prompt clarity, context usage, iterative improvement | AI review (conversation summary analysis) |
-| **Trap Detection** | Finding intentionally hidden bugs / incorrect tests | Automated (modified test file matching) |
+| Criteria | What's measured | How |
+|----------|----------------|-----|
+| **Completeness** | Test pass rate | Automated |
+| **Output Quality** | Code quality, structure, naming | AI review (code diff) |
+| **Process Quality** | Prompt clarity, context usage, iteration | AI review (conversation) |
+| **Trap Detection** | Finding hidden bugs / incorrect tests | Automated |
 
 ### Badges
 
-One of 16 badges is awarded based on your performance and behavior patterns:
+16 badges awarded based on performance and behavior:
 
 | Badge | Description |
 |-------|-------------|
@@ -75,25 +69,15 @@ One of 16 badges is awarded based on your performance and behavior patterns:
 | TOKEN SWEEPER | Heavy token consumption |
 | ??? | 10 secret badges |
 
----
-
 ## Data Sent on Submission
 
 - Code changes (git diff)
 - AI conversation summary (~5000 tokens, file paths removed)
 - Test results
-- Tool usage patterns (which tools were used and how often)
-- List of modified test files
+- Tool usage patterns
+- Modified test file list
 
-> File paths are stripped from the data, and your consent is requested before submission.
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `/leet-ai-start` | Start the challenge |
-| `/leet-ai-submit` | Submit & grade |
-| `/leet-ai-reset` | Reset code to initial state |
+> File paths are stripped. Your consent is requested before submission.
 
 ## Requirements
 
