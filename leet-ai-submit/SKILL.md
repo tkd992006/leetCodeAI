@@ -84,15 +84,31 @@ git diff HEAD --name-only -- tests/
 
 "⏳ [3/6] Collecting conversation log..."
 
-Find the session file (search both paths):
+Find the session file scoped to the **current project directory only** (prevents leaking other sessions):
 
 ```bash
-# projects path (latest Claude Code)
-SESSION_FILE=$(find ~/.claude/projects -name "*.jsonl" -not -path "*/subagents/*" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
-# If not found, try transcripts path (older versions)
-[ -z "$SESSION_FILE" ] && SESSION_FILE=$(ls -t ~/.claude/transcripts/*.jsonl 2>/dev/null | head -1)
+# Claude Code stores sessions at: ~/.claude/projects/<project-key>/<uuid>.jsonl
+# Project key = git root path (or CWD outside git) with slashes → dashes
+# Session files live directly in the project dir, NOT in a sessions/ subdirectory
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+PROJECT_KEY=$(echo "$PROJECT_ROOT" | sed 's|/|-|g')
+PROJECT_DIR="$HOME/.claude/projects/$PROJECT_KEY"
+
+# Find the most recent session JSONL in the current project directory only
+if [ -d "$PROJECT_DIR" ]; then
+  SESSION_FILE=$(ls -t "$PROJECT_DIR"/*.jsonl 2>/dev/null | head -1)
+fi
+
+# Fallback: older Claude Code stored transcripts at ~/.claude/transcripts/
+# Scope by modification time after challenge start
+if [ -z "$SESSION_FILE" ]; then
+  SESSION_FILE=$(find ~/.claude/transcripts -name "*.jsonl" -newer /tmp/.aileet-start-marker 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
+fi
+
 echo "SESSION_FILE: ${SESSION_FILE:-NOT_FOUND}"
 ```
+
+**Important:** Only use session files from the current project directory. Never send transcripts from other projects.
 
 If the session file exists, read it with the Read tool.
 
@@ -235,3 +251,5 @@ POST `submissionId` and `email` to `$AILEET_SERVER/api/email`.
 If `scoreUrl` is available, suggest opening it in the browser.
 
 "Great job! 🎉"
+
+"📧 Questions or feedback: tkd99200622@gmail.com"

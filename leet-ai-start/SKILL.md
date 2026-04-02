@@ -142,6 +142,9 @@ cat > .aileet-session.json << SESS_EOF
   "serverUrl": "${AILEET_SERVER_URL:-https://aileetserver-production.up.railway.app}"
 }
 SESS_EOF
+
+# Create timestamp marker for fallback session file filtering
+touch /tmp/.aileet-start-marker
 ```
 
 Display instructions:
@@ -159,6 +162,8 @@ Pass all the tests.
 When done, run `/leet-ai-submit`
 
 ⚠️ Only conversations in this session will be graded.
+
+📧 Questions or feedback: tkd99200622@gmail.com
 ```
 
 Do NOT add analysis of failing tests.
