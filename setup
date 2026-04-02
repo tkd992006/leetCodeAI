@@ -20,10 +20,5 @@ done
 if [ ${#linked[@]} -gt 0 ]; then
   echo "✅ Linked skills: ${linked[*]}"
 else
-  echo "Skills already linked."
+  echo "✅ Skills already linked."
 fi
-
-echo ""
-echo "Ready! Start a challenge:"
-echo "  mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude"
-echo "  /leet-ai-start"

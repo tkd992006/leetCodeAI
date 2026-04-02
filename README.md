@@ -5,11 +5,19 @@
 A hands-on challenge that measures how effectively you can work with an AI coding assistant.
 Solve coding problems with Claude Code, get scored on 4 criteria, and earn badges.
 
-## Installation (30 seconds)
+## Installation
 
 ```bash
 git clone https://github.com/tkd992006/leetCodeAI.git ~/.claude/skills/leetCodeAI && ~/.claude/skills/leetCodeAI/setup
 ```
+
+## Taking the Challenge
+
+```bash
+mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
+```
+
+Then inside Claude Code, type `/leet-ai-start`.
 
 ## See it work
 
@@ -46,28 +54,18 @@ Claude: 📊 Submitting for grading...
 
 ## Scoring
 
-4 criteria, 25 points each, 100 total:
-
-| Criteria | What's measured | How |
-|----------|----------------|-----|
-| **Completeness** | Test pass rate | Automated |
-| **Output Quality** | Code quality, structure, naming | AI review (code diff) |
-| **Process Quality** | Prompt clarity, context usage, iteration | AI review (conversation) |
-| **Trap Detection** | Finding hidden bugs / incorrect tests | Automated |
+Graded on **100 points** across multiple criteria — code quality, test results, how you use AI, and more.
+Exact weights are not disclosed.
 
 ### Badges
 
-16 badges awarded based on performance and behavior:
+16 badges based on your performance and behavior patterns:
 
-| Badge | Description |
-|-------|-------------|
-| ZERO SHOT SHIPPER | Perfect score in under 15 minutes |
-| HALLUCINATION HUNTER | Top AI hallucination detection |
-| PROMPT SURGEON | Exceptional code quality |
-| CONTEXT ARCHITECT | Master of context utilization |
-| DEBUG WHISPERER | Consistent and methodical debugging |
-| TOKEN SWEEPER | Heavy token consumption |
-| ??? | 10 secret badges |
+| Badge | Hint |
+|-------|------|
+| ZERO SHOT SHIPPER | Speed + perfection |
+| PROMPT SURGEON | Exceptional output quality |
+| ??? | 14 secret badges |
 
 ## Data Sent on Submission
 
