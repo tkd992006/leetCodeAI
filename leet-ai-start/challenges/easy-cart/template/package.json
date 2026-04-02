@@ -1,0 +1,14 @@
+{
+  "name": "cart-challenge",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vite": "^6",
+    "vitest": "^3",
+    "typescript": "^5"
+  }
+}

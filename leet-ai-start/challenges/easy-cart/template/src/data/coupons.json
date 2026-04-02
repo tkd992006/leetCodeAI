@@ -1,0 +1,26 @@
+[
+  {
+    "code": "SAVE10",
+    "rate": 10,
+    "minOrderAmount": 5000,
+    "description": "10% 할인 쿠폰"
+  },
+  {
+    "code": "HALF50",
+    "rate": 50,
+    "minOrderAmount": 10000,
+    "description": "반값 할인 쿠폰"
+  },
+  {
+    "code": "VIP20",
+    "rate": 20,
+    "minOrderAmount": 30000,
+    "description": "VIP 전용 20% 할인"
+  },
+  {
+    "code": "MEGA100",
+    "rate": 100,
+    "minOrderAmount": 1000,
+    "description": "직원 전용 전액 할인"
+  }
+]

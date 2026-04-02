@@ -1,0 +1,37 @@
+[
+  {
+    "id": "prod-001",
+    "name": "맥북 프로 14인치",
+    "price": 2000000,
+    "category": "electronics",
+    "inStock": true
+  },
+  {
+    "id": "prod-002",
+    "name": "아이패드 에어",
+    "price": 800000,
+    "category": "electronics",
+    "inStock": true
+  },
+  {
+    "id": "prod-003",
+    "name": "에어팟 프로",
+    "price": 350000,
+    "category": "electronics",
+    "inStock": true
+  },
+  {
+    "id": "prod-004",
+    "name": "무선 키보드",
+    "price": 150000,
+    "category": "accessories",
+    "inStock": true
+  },
+  {
+    "id": "prod-005",
+    "name": "USB-C 허브",
+    "price": 80000,
+    "category": "accessories",
+    "inStock": false
+  }
+]

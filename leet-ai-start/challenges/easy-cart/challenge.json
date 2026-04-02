@@ -1,0 +1,9 @@
+{
+  "id": "easy-cart-v1",
+  "titleKo": "장바구니 버그 수정",
+  "titleEn": "Shopping Cart Bug Fix",
+  "descriptionKo": "전자상거래 장바구니 앱의 버그를 수정하세요. 테스트를 전부 통과시키세요.",
+  "descriptionEn": "Fix bugs in an e-commerce shopping cart app. Make all tests pass.",
+  "difficulty": "medium",
+  "timeLimitMinutes": 30
+}
