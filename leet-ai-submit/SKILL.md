@@ -83,34 +83,25 @@ If no file found via Glob, try the fallback path:
 
 **Important:** Only use session files from the current project directory. Never send transcripts from other projects.
 
-If the session file exists, read it with the Read tool.
+If the session file exists, parse it with the script:
 
-Analyze `tool_use` type records from the JSONL:
-- Tally usage count per tool
-- First tool name
-- Number of `user` type records = total turns
-
-Construct `toolUseSummary`:
-```json
-{
-  "toolCounts": { "read": 12, "edit": 6, "bash": 4 },
-  "firstTool": "read",
-  "totalTurns": 10
-}
+```bash
+bun ${CLAUDE_SKILL_DIR}/scripts/parse-session.ts <session_file_path>
 ```
 
-If no session file, use empty values:
+Parse the output:
+- `===TOOL_SUMMARY===`: JSON with `toolCounts`, `firstTool`, `totalTurns`
+- `===MESSAGES===` ~ `===END===`: conversation messages (file paths already replaced with `[PATH]`)
+
+Use the messages to create a `conversationSummary` (~5000 tokens).
+
+If no session file found via Glob, use empty values:
 ```json
 { "toolCounts": {}, "firstTool": "", "totalTurns": 0 }
 ```
+and set `conversationSummary` to an empty string.
 
-Extract `user` and `assistant` type messages from the same session file.
-
-Preprocessing:
-1. Replace file paths with `[PATH]`
-2. Summarize to ~5000 tokens
-
-If no session file, set `conversationSummary` to an empty string.
+**Important:** Do NOT use Python or inline bash to parse the JSONL. Always use the parse-session.ts script.
 
 "✅ [3/6] Conversation summary generated (including tool_use patterns)"
 
@@ -199,7 +190,12 @@ bun ${CLAUDE_SKILL_DIR}/scripts/send-email.ts <serverUrl> <submissionId> <email>
 
 ### Step 7: Wrap up
 
-If `scoreUrl` is available, suggest opening it in the browser.
+If `scoreUrl` is available, display the URL on its own line as plain text (not as a markdown link) so it is cmd+clickable in the terminal:
+
+```
+🔗 상세 결과 보기:
+https://leet-a-icode-web.vercel.app/result/{submissionId}
+```
 
 "Great job! 🎉"
 
