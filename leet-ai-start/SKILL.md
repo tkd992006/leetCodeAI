@@ -1,6 +1,7 @@
 ---
 name: leet-ai-start
 description: Leet Code AI challenge start — check environment, unpack template, begin coding
+allowed-tools: Bash(bash *) Bash(bun *) Bash(git *) Bash(cp *) Bash(code *) Bash(cursor *) Bash(open *) Bash(date *) Bash(touch *) Read Write Glob
 ---
 
 # /leet-ai-start
@@ -17,26 +18,16 @@ mkdir ~/aileet-challenge && cd ~/aileet-challenge && claude
 Display the following message: "🔍 Checking your environment..."
 
 ```bash
-echo "=== Leet Code AI Environment Check ==="
-
-if command -v bun &>/dev/null; then
-  echo "BUN: $(bun --version)"
-else
-  echo "BUN: NOT_FOUND"
-fi
-
-if command -v git &>/dev/null; then
-  echo "GIT: $(git --version)"
-else
-  echo "GIT: NOT_FOUND"
-fi
-
-FILE_COUNT=$(ls -A 2>/dev/null | wc -l | tr -d ' ')
-echo "FILES_IN_CWD: $FILE_COUNT"
-
-AILEET_START_TIME=$(date +%s)
-echo "START_TIME: $AILEET_START_TIME"
+bash ${CLAUDE_SKILL_DIR}/scripts/env-check.sh
 ```
+
+Parse the output and save key values:
+- `BUN:` → bun version or NOT_FOUND
+- `GIT:` → git version or NOT_FOUND
+- `FILES_IN_CWD:` → file count
+- `START_TIME:` → unix timestamp (save for Step 6)
+- `AILEET_SERVER:` → server URL (save for Step 6)
+- `UPDATE:` / `UP_TO_DATE` / `SKIP_UPDATE` → auto-update status
 
 Display results:
 - If bun is found: "✅ bun X.X detected"
@@ -45,6 +36,7 @@ Display results:
 - If git is missing: "❌ git not installed"
 - If directory is empty: "✅ Empty directory confirmed"
 - If files exist: "❌ Files found"
+- If AILEET_SERVER contains "localhost": "⚠️ Local mode: {AILEET_SERVER}"
 
 **If bun is missing:**
 AskUserQuestion: "bun is not installed. Would you like to install it?"
@@ -64,33 +56,9 @@ You must start in an empty directory. Run the following command:
 Then run /leet-ai-start again in the new Claude Code session.
 ```
 
-### Step 1.5: Auto-update skill
-
-Check the skill repository for version updates and pull if a newer version is available:
-
-```bash
-SKILL_DIR="$HOME/.claude/skills/leet-ai-start"
-[ -L "$SKILL_DIR" ] && SKILL_DIR="$(cd "$SKILL_DIR" && pwd -P)"
-REPO_DIR="$(cd "$SKILL_DIR" && git rev-parse --show-toplevel 2>/dev/null)"
-
-if [ -n "$REPO_DIR" ] && [ -f "$REPO_DIR/version.json" ]; then
-  LOCAL_VER=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$REPO_DIR/version.json" | cut -d'"' -f4)
-  git -C "$REPO_DIR" fetch --quiet origin main 2>/dev/null
-  REMOTE_VER=$(git -C "$REPO_DIR" show origin/main:version.json 2>/dev/null | grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' | cut -d'"' -f4)
-
-  if [ -n "$LOCAL_VER" ] && [ -n "$REMOTE_VER" ] && [ "$LOCAL_VER" != "$REMOTE_VER" ]; then
-    echo "UPDATE: $LOCAL_VER → $REMOTE_VER"
-  else
-    echo "UP_TO_DATE"
-  fi
-else
-  echo "SKIP_UPDATE"
-fi
-```
-
-- If `UPDATE`: Run `git -C "$REPO_DIR" pull --ff-only origin main`
-  - Success: "✅ Skill updated ($LOCAL_VER → $REMOTE_VER)"
-  - Failure: "⚠️ Auto-update failed. Continuing with current version."
+**Auto-update results:**
+- If `UPDATE_SUCCESS`: "✅ Skill updated ($LOCAL_VER → $REMOTE_VER)"
+- If `UPDATE_FAILED`: "⚠️ Auto-update failed. Continuing with current version."
 - If `UP_TO_DATE` or `SKIP_UPDATE`: Continue silently (no message)
 
 ### Step 2: Consent
@@ -105,60 +73,39 @@ AskUserQuestion: "Choose your preferred language for grading results:"
 A) 한국어 → Set locale to "ko"
 B) English → Set locale to "en"
 
-Save the selected locale for Step 7 (session config).
+Save the selected locale for Step 6 (session config).
 
-### Step 3: Prepare challenge
+### Step 2.7: Select challenge
+
+AskUserQuestion: "Choose a challenge:"
+A) 🛒 Shopping Cart Bug Fix [Medium] | 30 min — Fix bugs in a shopping cart app
+B) 📝 Task API Comments [Medium] | 45 min — Add a comment system to a task management API
+
+Save the selected challenge slug:
+- A → Set AILEET_CHALLENGE to "easy-cart"
+- B → Set AILEET_CHALLENGE to "medium-task-api"
+
+### Step 3: Prepare challenge + Initialize Git
 
 "📦 Preparing challenge files..."
 
 ```bash
-# Find skill directory (resolve if symlink — macOS compatible)
-SKILL_DIR="$HOME/.claude/skills/leet-ai-start"
-[ -L "$SKILL_DIR" ] && SKILL_DIR="$(cd "$SKILL_DIR" && pwd -P)"
-TEMPLATE_DIR="$SKILL_DIR/challenges/easy-cart/template"
-CHALLENGE_JSON="$SKILL_DIR/challenges/easy-cart/challenge.json"
-
-if [ ! -d "$TEMPLATE_DIR" ]; then
-  echo "ERROR: Template not found: $TEMPLATE_DIR"
-  exit 1
-fi
-
-# Unpack template files into the current directory
-cp -r "$TEMPLATE_DIR/"* ./
-cp -r "$TEMPLATE_DIR/".* ./ 2>/dev/null || true
-
-# Also copy challenge.json (used by submit to read challengeId)
-[ -f "$CHALLENGE_JSON" ] && cp "$CHALLENGE_JSON" ./challenge.json
-
-bun install
+bash ${CLAUDE_SKILL_DIR}/scripts/setup.sh ${AILEET_CHALLENGE}
 ```
 
-"✅ Template copied"
-"✅ Dependencies installed"
+If output contains `TEMPLATE_COPIED`: "✅ Template copied, ✅ Dependencies installed"
+If output contains `GIT_INITIALIZED`: "✅ Git initialized"
+If output contains `ERROR`: Display the error and abort.
 
-### Step 4: Initialize Git
-
-```bash
-git init && git add -A && git commit -m "initial" --no-verify
-```
-
-"✅ Git initialized"
-
-### Step 5: Open editor
+### Step 4: Open editor
 
 "🖥️ Opening editor..."
 
 ```bash
-if command -v code &>/dev/null; then
-  code .
-elif command -v cursor &>/dev/null; then
-  cursor .
-else
-  open .
-fi
+bash ${CLAUDE_SKILL_DIR}/scripts/open-editor.sh
 ```
 
-### Step 6: Run tests
+### Step 5: Run tests
 
 "🧪 Checking current test status..."
 
@@ -166,27 +113,26 @@ fi
 bun run test 2>&1
 ```
 
-### Step 7: Save session config + instructions
+### Step 6: Save session config + instructions
 
 After environment setup and test run are complete, record the start time.
-From this point on is the user's actual working time:
+From this point on is the user's actual working time.
 
-```bash
-cat > .aileet-session.json << SESS_EOF
+Read `./challenge.json` using the Read tool and extract `id` and `timeLimitMinutes`.
+
+Use the Write tool to create `.aileet-session.json` using `AILEET_SERVER` from Step 1 and `SETUP_TIME` from Step 3:
+```json
 {
-  "challengeId": "easy-cart-v1",
-  "startTime": $(date +%s),
-  "serverUrl": "${AILEET_SERVER_URL:-https://aileetserver-production.up.railway.app}",
-  "locale": "${AILEET_LOCALE:-ko}"
+  "challengeId": "<id from challenge.json>",
+  "startTime": <SETUP_TIME from Step 3 output>,
+  "serverUrl": "<AILEET_SERVER from Step 1>",
+  "locale": "<selected locale from Step 2.5>"
 }
-SESS_EOF
-
-# Create timestamp marker for fallback session file filtering
-touch /tmp/.aileet-start-marker
 ```
 
-Display instructions:
+Read the challenge metadata from challenge.json, and display instructions dynamically:
 
+- If the challenge is `easy-cart-v1`:
 ```
 === Leet Code AI Challenge Start ===
 
@@ -198,7 +144,25 @@ Display instructions:
 
 Pass all the tests.
 When done, run `/leet-ai-submit`
+```
 
+- If the challenge is `medium-task-api-v1`:
+```
+=== Leet Code AI Challenge Start ===
+
+📋 Task API Comment System [Medium] | ⏱️ 45 minutes
+
+💡 Usage:
+  `bun run test` → Run tests
+
+Read the PRD.md file for feature requirements.
+Explore the existing codebase, then implement the comment system.
+Pass all the tests.
+When done, run `/leet-ai-submit`
+```
+
+Always append:
+```
 ⚠️ Only conversations in this session will be graded.
 
 📧 Questions or feedback: tkd99200622@gmail.com

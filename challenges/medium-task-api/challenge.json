@@ -1,0 +1,9 @@
+{
+  "id": "medium-task-api-v1",
+  "titleKo": "태스크 API 코멘트 시스템",
+  "titleEn": "Task API Comment System",
+  "descriptionKo": "기존 태스크 관리 API에 코멘트 기능을 추가하세요. PRD를 읽고, 기존 코드 패턴을 파악한 뒤, 테스트를 전부 통과시키세요.",
+  "descriptionEn": "Add a comment system to an existing task management API. Read the PRD, understand the codebase patterns, and make all tests pass.",
+  "difficulty": "medium",
+  "timeLimitMinutes": 45
+}

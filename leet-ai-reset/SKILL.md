@@ -1,6 +1,7 @@
 ---
 name: leet-ai-reset
 description: Leet Code AI challenge reset — revert code changes
+allowed-tools: Bash(git checkout -- .) Bash(git clean -fd) Glob
 ---
 
 # /leet-ai-reset
@@ -9,11 +10,11 @@ Reset the challenge to its initial state.
 
 ### Step 1: Check challenge
 
-```bash
-[ -f "./package.json" ] && [ -d "./tests" ] && echo "CHALLENGE_FOUND" || echo "NO_CHALLENGE"
-```
+Use the Glob tool to verify:
+- `package.json` exists
+- `tests/` directory exists (check for any file in `tests/**/*`)
 
-If `NO_CHALLENGE`: "This is not a challenge directory." and abort.
+If either is missing: "This is not a challenge directory." and abort.
 
 ### Step 2: Confirm
 
